@@ -16,6 +16,7 @@ const (
 )
 
 var (
+	fApiHost  string
 	fApiToken string
 	fChatId   string
 )
@@ -23,6 +24,7 @@ var (
 func init() {
 	argsPrefix := "TELEGRAMBOT_"
 
+	flag.StringVar(&fApiHost, argsPrefix+"APIHOST", "", "")
 	flag.StringVar(&fApiToken, argsPrefix+"APITOKEN", "", "")
 	flag.StringVar(&fChatId, argsPrefix+"CHATID", "", "")
 }
@@ -31,6 +33,7 @@ func init() {
 Shell command to run this test:
 
 	go test -v ./telegrambot_test.go -args \
+	--TELEGRAMBOT_APIHOST="https://api.telegram.org" \
 	--TELEGRAMBOT_APITOKEN="your-api-token" \
 	--TELEGRAMBOT_CHATID="your-chat-id"
 */
@@ -40,11 +43,13 @@ func TestNotify(t *testing.T) {
 	t.Run("Notify", func(t *testing.T) {
 		t.Log(strings.Join([]string{
 			"args:",
+			fmt.Sprintf("APIHOST: %v", fApiHost),
 			fmt.Sprintf("APITOKEN: %v", fApiToken),
 			fmt.Sprintf("CHATID: %v", fChatId),
 		}, "\n"))
 
 		provider, err := provider.NewNotifier(&provider.NotifierConfig{
+			Host:     fApiHost,
 			BotToken: fApiToken,
 			ChatId:   fChatId,
 		})

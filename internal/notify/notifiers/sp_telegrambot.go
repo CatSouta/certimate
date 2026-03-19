@@ -17,6 +17,7 @@ func init() {
 		}
 
 		provider, err := telegrambot.NewNotifier(&telegrambot.NotifierConfig{
+			Host:     credentials.Host,
 			BotToken: credentials.BotToken,
 			ChatId:   xmaps.GetOrDefaultString(options.ProviderExtendedConfig, "chatId", credentials.ChatId),
 		})

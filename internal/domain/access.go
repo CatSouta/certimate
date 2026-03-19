@@ -535,6 +535,7 @@ type AccessConfigForTechnitiumDNS struct {
 }
 
 type AccessConfigForTelegramBot struct {
+	Host     string `json:"host"`
 	BotToken string `json:"botToken"`
 	ChatId   string `json:"chatId,omitempty"`
 }

@@ -13,6 +13,8 @@ import (
 )
 
 type NotifierConfig struct {
+	// Telegram Bot API Host
+	Host string `json:"host"`
 	// Telegram Bot API Token。
 	BotToken string `json:"botToken"`
 	// Telegram Chat ID。
@@ -30,6 +32,10 @@ var _ notifier.Provider = (*Notifier)(nil)
 func NewNotifier(config *NotifierConfig) (*Notifier, error) {
 	if config == nil {
 		return nil, errors.New("the configuration of the notifier provider is nil")
+	}
+
+	if config.Host == "" {
+		config.Host = "https://api.telegram.org"
 	}
 
 	client := resty.New().
@@ -59,7 +65,7 @@ func (n *Notifier) Notify(ctx context.Context, subject string, message string) (
 			"chat_id": n.config.ChatId,
 			"text":    subject + "\n" + message,
 		})
-	resp, err := req.Post(fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", n.config.BotToken))
+	resp, err := req.Post(fmt.Sprintf("%s/bot%s/sendMessage", n.config.Host, n.config.BotToken))
 	if err != nil {
 		return nil, fmt.Errorf("telegram api error: failed to send request: %w", err)
 	} else if resp.IsError() {
